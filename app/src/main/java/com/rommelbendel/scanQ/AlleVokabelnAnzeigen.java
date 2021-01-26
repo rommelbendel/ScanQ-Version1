@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -18,6 +20,7 @@ import android.widget.ViewSwitcher;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -227,10 +230,17 @@ public class AlleVokabelnAnzeigen extends AppCompatActivity {
                 return false;
             });
 
-            TableRow.LayoutParams marginParams = new TableRow.LayoutParams();
-            marginParams.setMargins(0, 0, 5, 0);
+            LayoutParams cardParams = new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.MATCH_PARENT);
+            cardParams.setMargins(0, 0, 10, 0);
+
+            //TableRow.LayoutParams marginParams = new TableRow.LayoutParams();
+            //marginParams.setMargins(0, 0, 5, 0);
 
             ViewSwitcher viewSwitcherENG = new ViewSwitcher(this);
+
+            CardView cardTxtVENG = new CardView(this);
+            cardTxtVENG.setLayoutParams(cardParams);
 
             TextView english = new TextView(this);
             english.setText(vocab.getVokabelENG());
@@ -238,7 +248,11 @@ public class AlleVokabelnAnzeigen extends AppCompatActivity {
             english.setTextSize(20);
             english.setBackgroundColor(Color.TRANSPARENT);
             english.setPadding(15, 5, 15, 5);
-            english.setLayoutParams(marginParams);
+            //english.setLayoutParams(marginParams);
+
+            cardTxtVENG.addView(english);
+
+            CardView cardETENG = new CardView(this);
 
             EditText englishEdit = new EditText(this);
             englishEdit.setText(vocab.getVokabelENG());
@@ -246,25 +260,38 @@ public class AlleVokabelnAnzeigen extends AppCompatActivity {
             englishEdit.setTextColor(Color.WHITE);
             englishEdit.setTextSize(20);
             englishEdit.setBackgroundColor(Color.TRANSPARENT);
-            englishEdit.setPadding(15, 5, 15, 5);
-            englishEdit.setLayoutParams(marginParams);
+            englishEdit.setPadding(5, 5, 5, 5);
+            //englishEdit.setLayoutParams(marginParams);
 
-            viewSwitcherENG.addView(english, 0);
-            viewSwitcherENG.addView(englishEdit, 1);
+            cardETENG.addView(englishEdit);
+            cardETENG.setLayoutParams(cardParams);
+
+            //viewSwitcherENG.addView(english, 0);
+            //viewSwitcherENG.addView(englishEdit, 1);
+            //viewSwitcherENG.setDisplayedChild(0);
+            viewSwitcherENG.addView(cardTxtVENG, 0);
+            viewSwitcherENG.addView(cardETENG, 1);
             viewSwitcherENG.setDisplayedChild(0);
 
-
-            marginParams.setMargins(5, 0, 0, 0);
+            //marginParams.setMargins(5, 0, 0, 0);
 
             ViewSwitcher viewSwitcherDE = new ViewSwitcher(this);
+
+            CardView cardTxtVDE = new CardView(this);
+            //cardTxtVDE.setLayoutParams(cardParams);
 
             TextView german = new TextView(this);
             german.setText(vocab.getVokabelDE());
             german.setTextColor(Color.WHITE);
             german.setTextSize(20);
             german.setBackgroundColor(Color.TRANSPARENT);
-            german.setPadding(15, 5, 15, 5);
-            german.setLayoutParams(marginParams);
+            german.setPadding(15, 5, 5, 5);
+            //german.setLayoutParams(marginParams);
+
+            cardTxtVDE.addView(german);
+
+            CardView cardETDE = new CardView(this);
+            //cardETDE.setLayoutParams(cardParams);
 
             EditText germanEdit = new EditText(this);
             germanEdit.setText(vocab.getVokabelDE());
@@ -272,11 +299,16 @@ public class AlleVokabelnAnzeigen extends AppCompatActivity {
             germanEdit.setTextColor(Color.WHITE);
             germanEdit.setTextSize(20);
             germanEdit.setBackgroundColor(Color.TRANSPARENT);
-            germanEdit.setPadding(15, 5, 15, 5);
-            germanEdit.setLayoutParams(marginParams);
+            germanEdit.setPadding(15, 5, 5, 5);
+            //germanEdit.setLayoutParams(marginParams);
 
-            viewSwitcherDE.addView(german, 0);
-            viewSwitcherDE.addView(germanEdit, 1);
+            cardETDE.addView(germanEdit);
+
+            //viewSwitcherDE.addView(german, 0);
+            //viewSwitcherDE.addView(germanEdit, 1);
+            //viewSwitcherDE.setDisplayedChild(0);
+            viewSwitcherDE.addView(cardTxtVDE, 0);
+            viewSwitcherDE.addView(cardETDE, 1);
             viewSwitcherDE.setDisplayedChild(0);
 
 
@@ -285,11 +317,19 @@ public class AlleVokabelnAnzeigen extends AppCompatActivity {
                 englishEdit.setBackgroundColor(Color.parseColor("#9b59b6"));
                 german.setBackgroundColor(Color.parseColor("#9b59b6"));
                 germanEdit.setBackgroundColor(Color.parseColor("#9b59b6"));
+                cardETDE.setCardBackgroundColor(Color.parseColor("#9b59b6"));
+                cardETENG.setCardBackgroundColor(Color.parseColor("#9b59b6"));
+                cardTxtVDE.setCardBackgroundColor(Color.parseColor("#9b59b6"));
+                cardTxtVENG.setCardBackgroundColor(Color.parseColor("#9b59b6"));
             } else {
                 english.setBackgroundColor(Color.parseColor("#13b5a4"));
                 englishEdit.setBackgroundColor(Color.parseColor("#13b5a4"));
                 german.setBackgroundColor(Color.parseColor("#13b5a4"));
                 germanEdit.setBackgroundColor(Color.parseColor("#13b5a4"));
+                cardETDE.setCardBackgroundColor(Color.parseColor("#13b5a4"));
+                cardETENG.setCardBackgroundColor(Color.parseColor("#13b5a4"));
+                cardTxtVDE.setCardBackgroundColor(Color.parseColor("#13b5a4"));
+                cardTxtVENG.setCardBackgroundColor(Color.parseColor("#13b5a4"));
             }
 
             vocabRow.addView(viewSwitcherENG);
