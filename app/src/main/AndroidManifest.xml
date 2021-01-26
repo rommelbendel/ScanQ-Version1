@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.rommelbendel.scanQ">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="ocr" />
+
+        <service
+            android:name=".Service.MyFirebaseService"
+            android:exported="false"
+            android:directBootAware="true"
+            tools:targetApi="n">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!--<service
+            android:name=".ClickIntentService"
+            android:exported="false" />
+
+        <receiver android:name=".AppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/app_widget_info" />
+        </receiver>
+
+        <activity android:name=".AppWidgetConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>-->
+        <activity
+            android:name="com.rommelbendel.scanQ.Einstellungen"
+            android:label="Einstellungen"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.rommelbendel.scanQ.Startbildschirm"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+        <activity
+            android:name="com.rommelbendel.scanQ.login"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <!--<activity
+            android:name=".registration"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".mail"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />-->
+        <activity
+            android:name="com.rommelbendel.scanQ.AppIntro"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.home"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.Haupt"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.Haupt1"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.test"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.testOCV"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.testOCR"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.TessOCR"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.OnlineQuiz"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.vokabelSet"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.quiz_menu"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.quiz"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.quiz2"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.quiz3"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.weiteres"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.SlideActivity" />
+        <activity
+            android:name="com.rommelbendel.scanQ.AlleVokabelnAnzeigen"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.rommelbendel.scanQ.certaindata"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.rommelbendel.scanQ.OnlineSocket"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.rommelbendel.scanQ.OnlineSocketReceiver"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+    </application>
+
+</manifest>
