@@ -1,4 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shortcuts>
-
+    <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+        <shortcut
+            android:shortcutId="einscannen"
+            android:enabled="true"
+            android:icon="@drawable/ic_add_box"
+            android:shortcutShortLabel="@string/einscannen"
+            android:shortcutDisabledMessage="@string/shortcut_disabled">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.rommelbendel.scanQ"
+                android:targetClass="com.rommelbendel.scanQ.Haupt1">
+            </intent>
+        </shortcut>
+        <shortcut
+            android:shortcutId="Quiz"
+            android:enabled="true"
+            android:icon="@drawable/ic_controler"
+            android:shortcutShortLabel="@string/quiz"
+            android:shortcutDisabledMessage="@string/shortcut_disabled">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.rommelbendel.scanQ"
+                android:targetClass="com.rommelbendel.scanQ.QuizSettings">
+            </intent>
+        </shortcut>
+        <shortcut
+            android:shortcutId="Vokabeln"
+            android:enabled="true"
+            android:icon="@drawable/ic_list"
+            android:shortcutShortLabel="@string/vokabeln"
+            android:shortcutDisabledMessage="@string/shortcut_disabled">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.rommelbendel.scanQ"
+                android:targetClass="com.rommelbendel.scanQ.CategoryOverview"/>
+        </shortcut>
     </shortcuts>
