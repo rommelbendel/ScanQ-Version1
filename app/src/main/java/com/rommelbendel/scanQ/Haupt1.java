@@ -25,6 +25,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +52,7 @@ import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.tabs.TabLayout;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -170,18 +176,15 @@ public class Haupt1 extends AppCompatActivity {
         iterator.begin();
         iterator2.begin();
         iterator3.begin();
-
         ArrayList<Rect> letters = new ArrayList<>();
         ArrayList<Rect> words = new ArrayList<>();
         ArrayList<Rect> lines = new ArrayList<>();
         do {
             letters.add(iterator.getBoundingRect(TessBaseAPI.PageIteratorLevel.RIL_SYMBOL));
         } while (iterator.next(TessBaseAPI.PageIteratorLevel.RIL_SYMBOL));
-
         do {
             words.add(iterator2.getBoundingRect(TessBaseAPI.PageIteratorLevel.RIL_WORD));
         } while (iterator2.next(TessBaseAPI.PageIteratorLevel.RIL_WORD));
-
         do {
             lines.add(iterator3.getBoundingRect(TessBaseAPI.PageIteratorLevel.RIL_TEXTLINE));
         } while (iterator3.next(TessBaseAPI.PageIteratorLevel.RIL_TEXTLINE));*/
@@ -197,6 +200,7 @@ public class Haupt1 extends AppCompatActivity {
     private EditText topic;
     private Spinner spinner;
     private SwitchCompat switchMode;
+    private RecyclerView tableVoc;
     private NestedScrollView tableScroll;
     private ImageView bildVorschau;
     private LinearLayout finalButtons, llForSpinner, llForET;
@@ -271,6 +275,7 @@ public class Haupt1 extends AppCompatActivity {
 
         topic = findViewById(R.id.topicEt);
         switchMode = findViewById(R.id.topicMode);
+        tableVoc = findViewById(R.id.tabelleVoc);
         spinner = findViewById(R.id.spinner);
         llForET = findViewById(R.id.llForET);
         llForSpinner = findViewById(R.id.llForSpinner);
@@ -379,71 +384,119 @@ public class Haupt1 extends AppCompatActivity {
             navMethodTopic.setVisibility(View.VISIBLE);
             tableScroll.setVisibility(View.GONE);
 
-            ArrayList<String> vocListD = tb.getListString("vocListD");
-            ArrayList<String> vocList = tb.getListString("vocListE");
+            //ArrayList<String> vocListD = tb.getListString("vocListD");
+            //ArrayList<String> vocList = tb.getListString("vocListE");
 
-            String[] example = {"", "unit1", "unit2", "unit3", "unit4"};
+            ArrayList<String> vocListD = new ArrayList<>();
+            ArrayList<String> vocListE = new ArrayList<>();
 
-            ArrayAdapter<String> adp2 = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_spinner_item, example);
-            adp2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adp2);
+            final int rowCount = tableVoc.getLayoutManager().getChildCount();
+            for (int i = 0; i < rowCount - 1; i++) {
+                TableLayout tableLayout = (TableLayout) tableVoc.getLayoutManager().findViewByPosition(i);
+                TableRow row = (TableRow) tableLayout.getChildAt(0);
+                String vocENG = ((EditText)((CardView) row.getChildAt(0)).getChildAt(0))
+                        .getText().toString().trim();
+                String vocDE = ((EditText)((CardView) row.getChildAt(1)).getChildAt(0))
+                        .getText().toString().trim();
+                vocListD.add(vocDE);
+                vocListE.add(vocENG);
+            }
 
-            switchMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if(isChecked) {
-                    llForET.setVisibility(View.GONE);
-                    llForSpinner.setVisibility(View.VISIBLE);
-                } else {
-                    llForET.setVisibility(View.VISIBLE);
-                    llForSpinner.setVisibility(View.GONE);
-                }
-            });
+            VokabelViewModel vokabelViewModel = new ViewModelProvider(Haupt1.this)
+                    .get(VokabelViewModel.class);
 
-            saveTopic.setOnClickListener(v -> {
-                // alles in Datenbank einsetzen (vocList, vocList, topicName)
-                if (llForET.getVisibility() == View.VISIBLE) {
-                    String topicName = topic.getText().toString();
+            KategorienViewModel kategorienViewModel = new ViewModelProvider(Haupt1.this)
+                    .get(KategorienViewModel.class);
 
-                    if(topicName.trim().length() != 0) {
-                        // einsetzen
-                        tb.putBoolean("Done", false);
-                        tb.putBoolean("EnglishDone", false);
-                        finish();
+            LiveData<List<Kategorie>> allCategoriesLiveData = kategorienViewModel
+                    .getAlleKategorien();
+
+            allCategoriesLiveData.observe(Haupt1.this, categories -> {
+                if (categories != null) {
+                    if (categories.size() > 0) {
+                        List<String> allCategories = new ArrayList<>();
+                        for (Kategorie category: categories) {
+                            allCategories.add(category.getName());
+                        }
+
+                        ArrayAdapter<String> adp2 = new ArrayAdapter<>(Haupt1.this,
+                                android.R.layout.simple_spinner_item, allCategories);
+                        adp2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinner.setAdapter(adp2);
+
+                        switchMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                            if(isChecked) {
+                                llForET.setVisibility(View.GONE);
+                                llForSpinner.setVisibility(View.VISIBLE);
+                            } else {
+                                llForET.setVisibility(View.VISIBLE);
+                                llForSpinner.setVisibility(View.GONE);
+                            }
+                        });
                     } else {
-                        new LiveSmashBar.Builder(Haupt1.this)
-                                .title("Bitte gib eine Kategorie ein")
-                                .titleColor(Color.WHITE)
-                                .backgroundColor(Color.parseColor("#541111"))
-                                .gravity(GravityView.BOTTOM)
-                                .primaryActionText("Ok")
-                                .primaryActionEventListener(LiveSmashBar::dismiss)
-                                .duration(3000)
-                                .showOverlay()
-                                .overlayBlockable()
-                                .show();
+                        switchMode.setEnabled(false);
                     }
-                }
 
-                if (llForSpinner.getVisibility() == View.VISIBLE) {
-                    if (spinner.getSelectedItemPosition() != 0) {
-                        //Kategorie aus Spinner wählen & alles einsetzen
+                    saveTopic.setOnClickListener(v -> {
+                        if (llForET.getVisibility() == View.VISIBLE) {
+                            String topicName = topic.getText().toString();
 
-                        tb.putBoolean("Done", false);
-                        tb.putBoolean("EnglishDone", false);
-                        finish();
-                    } else {
-                        new LiveSmashBar.Builder(Haupt1.this)
-                                .title("Bitte wähle eine Kategorie aus")
-                                .titleColor(Color.WHITE)
-                                .backgroundColor(Color.parseColor("#541111"))
-                                .gravity(GravityView.BOTTOM)
-                                .primaryActionText("Ok")
-                                .primaryActionEventListener(LiveSmashBar::dismiss)
-                                .duration(3000)
-                                .showOverlay()
-                                .overlayBlockable()
-                                .show();
-                    }
+                            if(topicName.trim().length() != 0) {
+                                Kategorie kategoryNew = new Kategorie(topicName.trim());
+                                kategorienViewModel.insertKategorie(kategoryNew);
+
+                                for (int i = 0; i < vocListD.size(); i++) {
+                                    Vokabel vocabToInsert = new Vokabel(vocListE.get(i),
+                                            vocListD.get(i), topicName);
+                                    vokabelViewModel.insertVokabel(vocabToInsert);
+                                }
+
+                                tb.putBoolean("Done", false);
+                                tb.putBoolean("EnglishDone", false);
+                                finish();
+                            } else {
+                                new LiveSmashBar.Builder(Haupt1.this)
+                                        .title("Bitte gib eine Kategorie ein")
+                                        .titleColor(Color.WHITE)
+                                        .backgroundColor(Color.parseColor("#541111"))
+                                        .gravity(GravityView.BOTTOM)
+                                        .primaryActionText("Ok")
+                                        .primaryActionEventListener(LiveSmashBar::dismiss)
+                                        .duration(3000)
+                                        .showOverlay()
+                                        .overlayBlockable()
+                                        .show();
+                            }
+                        }
+
+                        if (llForSpinner.getVisibility() == View.VISIBLE) {
+                            if (spinner.getSelectedItemPosition() != 0) {
+                                String topicName = spinner.getSelectedItem().toString();
+
+                                for (int i = 0; i < vocListD.size(); i++) {
+                                    Vokabel vocabToInsert = new Vokabel(vocListE.get(i),
+                                            vocListD.get(i), topicName);
+                                    vokabelViewModel.insertVokabel(vocabToInsert);
+                                }
+
+                                tb.putBoolean("Done", false);
+                                tb.putBoolean("EnglishDone", false);
+                                finish();
+                            } else {
+                                new LiveSmashBar.Builder(Haupt1.this)
+                                        .title("Bitte wähle eine Kategorie aus")
+                                        .titleColor(Color.WHITE)
+                                        .backgroundColor(Color.parseColor("#541111"))
+                                        .gravity(GravityView.BOTTOM)
+                                        .primaryActionText("Ok")
+                                        .primaryActionEventListener(LiveSmashBar::dismiss)
+                                        .duration(3000)
+                                        .showOverlay()
+                                        .overlayBlockable()
+                                        .show();
+                            }
+                        }
+                    });
                 }
             });
         });
@@ -474,7 +527,7 @@ public class Haupt1 extends AppCompatActivity {
                 chooseScanMethod();
             }
 
-           navMethod.setVisibility(View.GONE);
+            navMethod.setVisibility(View.GONE);
         });
 
         /*weiterMitGal.setOnClickListener(view -> {
@@ -483,7 +536,6 @@ public class Haupt1 extends AppCompatActivity {
             } else {
                 pickGallery();
             }
-
             navMethod.setVisibility(View.GONE);
         });*/
     }
@@ -510,7 +562,6 @@ public class Haupt1 extends AppCompatActivity {
             } else {
                 pickGallery();
             }
-
             navMethodD.setVisibility(View.GONE);
         });*/
     }
@@ -535,9 +586,7 @@ public class Haupt1 extends AppCompatActivity {
         /*ContentValues values = new ContentValues();
         /*values.put(MediaStore.Images.Media.TITLE, "neues Bild");
         values.put(MediaStore.Images.Media.DESCRIPTION, "Texterkennung");
-
         image_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
         startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);*/
@@ -637,7 +686,7 @@ public class Haupt1 extends AppCompatActivity {
             if (requestCode == IMAGE_START_SCAN_CODE) {
                 if (data != null && data.getExtras() != null)
                     image_uri = data.getData();
-                    intentForCropResult(image_uri, IMG_CROP_CODE);
+                intentForCropResult(image_uri, IMG_CROP_CODE);
             }
         }
         if (requestCode == IMG_CROP_CODE) {
@@ -855,9 +904,7 @@ public class Haupt1 extends AppCompatActivity {
     }
 
     /*public String textByTesseract(TextRecognizer recognizer, Bitmap bitmap) {
-
         String result = null;
-
         if (!recognizer.isOperational()) {
             Toast.makeText(this, "Fehler", Toast.LENGTH_SHORT).show();
         } else {
@@ -865,13 +912,11 @@ public class Haupt1 extends AppCompatActivity {
             Frame frame = new Frame.Builder().setBitmap(bitmap).build();
             SparseArray<TextBlock> items = recognizer.detect(frame);
             StringBuilder sb = new StringBuilder();
-
             for (int i = 0; i < items.size(); i++) {
                 TextBlock myItem = items.valueAt(i);
                 sb.append(myItem.getValue());
                 sb.append("\n");
             }
-
             result = sb.toString();
         }
         return result;
@@ -947,56 +992,52 @@ public class Haupt1 extends AppCompatActivity {
             bit = Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
             Utils.matToBitmap(img, bit);
         }
-
         if (tb.getInt("vocAmount") == 1) {
             Rect rect = new Rect(0, 0, img.width(), (img.height() / 2));
             Mat resized = new Mat(img, rect);
-
             Rect rect2 = new Rect(0, (img.height() / 2), img.width(), (img.height() / 2));
             Mat resized2 = new Mat(img, rect2);
-
             bit = Bitmap.createBitmap(resized.cols(), resized.rows(), Bitmap.Config.ARGB_8888);
             Utils.matToBitmap(resized, bit);
-
             bit2 = Bitmap.createBitmap(resized2.cols(), resized2.rows(), Bitmap.Config.ARGB_8888);
             Utils.matToBitmap(resized2, bit2);
         }*/
 
         //if (2 == 2) {
-            int[] crops = new int[medianVocs+1];
-            Bitmap[] bitmaps = new Bitmap[medianVocs];
-            Mat[] mats = new Mat[medianVocs];
+        int[] crops = new int[medianVocs+1];
+        Bitmap[] bitmaps = new Bitmap[medianVocs];
+        Mat[] mats = new Mat[medianVocs];
 
-            for(int v = 0; v < medianVocs+1; v++) {
-                int crop = img.height() / (medianVocs) * (v);
+        for(int v = 0; v < medianVocs+1; v++) {
+            int crop = img.height() / (medianVocs) * (v);
 
-                for (int i = 0; i < blockedSpaces.size(); i++) {
-                    int top = blockedSpaces.get(i)[0];
-                    int bottom = blockedSpaces.get(i)[1];
+            for (int i = 0; i < blockedSpaces.size(); i++) {
+                int top = blockedSpaces.get(i)[0];
+                int bottom = blockedSpaces.get(i)[1];
 
-                    if (crop > top && crop < bottom) {
-                        if (crop - top < bottom - crop) {
-                            crop = (int) (top * 0.99);
-                        } else {
-                            crop = (int) (bottom * 1.01);
-                        }
+                if (crop > top && crop < bottom) {
+                    if (crop - top < bottom - crop) {
+                        crop = (int) (top * 0.99);
+                    } else {
+                        crop = (int) (bottom * 1.01);
                     }
-                    crops[v] = crop;
                 }
+                crops[v] = crop;
             }
+        }
 
-            for(int c = 0; c < crops.length-1; c++) {
-                Rect rect = new Rect(0, crops[c], img.width(), crops[c+1]-crops[c]);
-                Mat resized = new Mat(img, rect);
-                Bitmap bit = Bitmap.createBitmap(resized.cols(), resized.rows(), Bitmap.Config.ARGB_8888);
+        for(int c = 0; c < crops.length-1; c++) {
+            Rect rect = new Rect(0, crops[c], img.width(), crops[c+1]-crops[c]);
+            Mat resized = new Mat(img, rect);
+            Bitmap bit = Bitmap.createBitmap(resized.cols(), resized.rows(), Bitmap.Config.ARGB_8888);
 
-                bitmaps[c] = bit;
-                mats[c] = resized;
-            }
+            bitmaps[c] = bit;
+            mats[c] = resized;
+        }
 
-            for (int i = 0; i < bitmaps.length; i++) {
-                Utils.matToBitmap(mats[i], bitmaps[i]);
-            }
+        for (int i = 0; i < bitmaps.length; i++) {
+            Utils.matToBitmap(mats[i], bitmaps[i]);
+        }
         //}
         return bitmaps;
     }
