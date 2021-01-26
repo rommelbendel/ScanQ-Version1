@@ -1,0 +1,45 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="Allgemines">
+
+        <EditTextPreference
+            app:key="signature"
+            app:title="@string/signature_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <!--<ListPreference
+            app:defaultValue="Wert 1"
+            app:entries="@array/reply_entries"
+            app:entryValues="@array/reply_values"
+            app:key="reply"
+            app:title="@string/reply_title"
+            app:useSimpleSummaryProvider="true" />-->
+
+        <SwitchPreferenceCompat
+            app:key="hello"
+            app:title="persönliche Begrüßung"
+            app:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Einscannen">
+
+        <SwitchPreferenceCompat
+            app:key="lowercase"
+            app:title="Engliche Vokabeln automatisch klein schreiben"
+            app:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="Online Multipayer"
+        app:enabled="false">
+
+        <PreferenceScreen
+            android:title="demnächst verfügbar..."
+            app:enabled="false"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
