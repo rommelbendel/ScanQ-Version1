@@ -106,6 +106,7 @@
     <string name="check">check</string>
     <string name="correct">correct</string>
     <string name="gel_st">gelöst!</string>
+    <string name="wiederholen">wiederholen</string>
 
     <string name="quiz_einstellungen">Quiz-Einstellungen</string>
     <string name="vokabeln">Vokabeln</string>
@@ -131,5 +132,16 @@
         <item>Kategorie 2</item>
         <item>Kategorie 3</item>
     </string-array>
+    
+    <!--  App Intro -->
+    <string name="title_1">test1</string>
+    <string name="title_2">test2</string>
+    <string name="title_3">test3</string>
+    <string name="title_4">test4</string>
+    <string name="text">random content</string>
+    <string name="noch_ein_paar_kleine_hinweise_bevor_es_losgeht">Hiermit kannst du...</string>
+    <string name="willkommen_bei_scanq">Willkommen bei ScanQ</string>
+    <string name="intro_quiz_arten">Du hast die Wahl zwischen <br/>Sprach-, Multiple-Choice- &amp; Eingabe-Spielen</string>
+    <string name="topic_sve_method">Wie möchtest du <br/> die Vokabeln speichern ?</string>
 
 </resources>
