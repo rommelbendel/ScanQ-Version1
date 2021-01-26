@@ -1,0 +1,135 @@
+<resources>
+    <string name="app_name">ScanQ</string>
+
+    <string name="text_button_activity_main">prüfen</string>
+    <string name="title_activity_main2">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="shortcut_disabled">Shortcut deaktiviert</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="galerie">Galerie</string>
+    <string name="kamera">Kamera</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="eingabe_1">Name</string>
+    <string name="textview1">TextView</string>
+    <string name="ergebnis">Ergebnis</string>
+    <string name="bild_hinzuf_gen">Bild Hinzufügen</string>
+    <string name="weiteres">weiteres</string>
+    <string name="scanq">ScanQ</string>
+    <string name="title_activity_einstellung">einstellung</string>
+    <string name="formatierung_datenausgabe">%s | %s</string>
+    <string name="leere_datenbank_fehlermeldung">Es sind noch keine Vokabeln vorhanden</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Überschrift 1</string>
+    <string name="sync_header">Überscrhift 2</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Dein Name</string>
+    <string name="reply_title">Auswahl Einstellung</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Schalter Einstllung</string>
+    <string name="attachment_title">potentielle Einstellung</string>
+    <string name="attachment_summary_on">zusätzliche Erklärung unterhalb  einer Einstellung für Fall 2</string>
+    <string name="attachment_summary_off">zusätzliche Erklärung unterhalb  einer Einstellung für Fall 1</string>
+    <string name="bild_vorschau">Bild Vorschau</string>
+    <string name="hier_steht_gleich_dein_ergebnis">Hier steht gleich dein Ergebnis…</string>
+    <string name="home">home</string>
+    <string name="aufgabe">aufgabe</string>
+    <string name="neu">neu</string>
+    <string name="einstellungen">Einstellungen</string>
+    <string name="titelbild">TitelBild</string>
+    <string name="brauchst_du_hilfe">Brauchst du Hilfe ?</string>
+    <string name="faq">FAQ</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="emptyspaceneu">Neu</string>
+    <string name="quiz">Quiz</string>
+    <string name="dateien">Dateien</string>
+    <string name="anzeigen">anzeigen</string>
+    <string name="l_schen">löschen</string>
+    <string name="bez_speichern">speichern</string>
+    <string name="aendern">ändern</string>
+    <string name="previous_button">previous Button</string>
+    <string name="next_button">next Button</string>
+    <string name="_0">0</string>
+    <string name="appicon">AppIcon</string>
+    <string name="datenbank">Datenbank</string>
+    <string name="Englisch">Englisch</string>
+    <string name="Deutsch">Deutsch</string>
+    <string name="Kategorie">Kategorie</string>
+    <string name="neue_vokabel">neue Vokabel</string>
+    <string name="markiert">markiert</string>
+    <string name="abbrechen">abbrechen</string>
+    <string name="gratualtion">Gratulation!</string>
+    <string name="du_hast">Du hast...</string>
+    <string name="_2_fragen_richtig">2 Fragen richtig</string>
+    <string name="_0_fragen_falsch">0 Fragen falsch</string>
+    <string name="geloest">gelöst!</string>
+    <string name="wiederholen">wiederholen</string>
+    <string name="ton_aus">ton aus</string>
+    <string name="aufnehmen">aufnehmen</string>
+    <string name="warte_auf_spracheingabe">warte auf Spracheingabe...</string>
+    <string name="bearbeiten">bearbeiten</string>
+    <string name="was_bedeutet">Was bedeutet...</string>
+    <string name="Appmodi">Appmodi</string>
+    <string name="blindenmodus">Blindenmodus</string>
+    <string name="exitHint">Zum Beenden gedrückt halten</string>
+    <string name="up">up</string>
+    <string name="down">down</string>
+    <string name="union_jack">union jack</string>
+    <string name="pruefen">prüfen</string>
+    <string name="bersetze_deutsche_n_vokabeln">Übersetze deutsche \n Vokabeln</string>
+    <string name="play">play</string>
+    <string name="bersetze_englische_n_vokabeln">Übersetze englische \n Vokabeln</string>
+    <string name="w_hle_aus_4_m_glichkeiten">Wähle aus 4 \nmöglichen Antworten</string>
+    <string name="multiple_choice">Multiple Choice</string>
+    <string name="flag">Flag</string>
+    <string name="uebersetzte_folgedes">Übersetzte folgedes:</string>
+    <string name="food">food</string>
+    <string name="loesung">Lösung</string>
+    <string name="richtig">Richtig</string>
+    <string name="food_essen">food = Essen</string>
+    <string name="falsch">Falsch</string>
+    <string name="essen_food">Essen = food</string>
+    <string name="das_essen">(das) Essen</string>
+    <string name="solution">solution</string>
+    <string name="wrong">wrong</string>
+    <string name="right">right</string>
+    <string name="translate_the_following">translate the following:</string>
+    <string name="check">check</string>
+    <string name="correct">correct</string>
+    <string name="gel_st">gelöst!</string>
+
+    <string name="quiz_einstellungen">Quiz-Einstellungen</string>
+    <string name="vokabeln">Vokabeln</string>
+    <string name="gemischt">gemischt</string>
+    <string name="nur_ungelernte_Vokabeln">Nur ungelernte Vokabeln</string>
+    <string name="start">start</string>
+    <string name="waehle_eine_kategorie">Wähle eine Kategorie</string>
+    <string name="daten_werden_geladen">Daten werden geladen…</string>
+    <string name="name">Name</string>
+    <string name="neue_kategorie">neue Kategorie</string>
+    <string name="alle_vokabeln">Alle Vokabeln</string>
+    <string name="deutsche_flagge">deutsche Flagge</string>
+    <string name="keine_kategorien_vorhanden">keine Kategorien vorhanden.</string>
+    <string-array name="QuizModeDropDown_Array">
+        <item>Eingabe DE</item>
+        <item>Eingabe ENG</item>
+        <item>Multiple-Choice DE</item>
+        <item>Multiple-Choice ENG</item>
+        <item>Spracheingabe</item>
+    </string-array>
+    <string-array name="CategoryDropDown_Array">
+        <item>Kategorie 1</item>
+        <item>Kategorie 2</item>
+        <item>Kategorie 3</item>
+    </string-array>
+
+</resources>
