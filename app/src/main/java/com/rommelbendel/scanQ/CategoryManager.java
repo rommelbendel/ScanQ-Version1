@@ -2,6 +2,7 @@ package com.rommelbendel.scanQ;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -56,18 +57,21 @@ public class CategoryManager extends AppCompatActivity {
         categoryNameInput.setText(categoryNameOld);
 
         buttonOK.setOnClickListener(v -> {
+            Log.e("click", "buttonOK");
             String categoryNameNew = categoryNameInput.getText().toString().trim();
             if (!categoryNameNew.isEmpty() && !categoryNameNew.equals(categoryNameOld)) {
                 kategorienViewModel.updateCategoryName(categoryNameOld, categoryNameNew);
                 finish();
-            } else if (categoryNameNew.isEmpty()) {
+            } else {
+                Log.e("Category Name", "empty");
                 LiveSmashBar.Builder warning = new LiveSmashBar.Builder(this);
                 warning.title("Bitte gib einen Namen ein");
                 warning.titleColor(Color.WHITE);
                 warning.backgroundColor(Color.parseColor("#541111"));
                 warning.gravity(GravityView.BOTTOM);
-                warning.primaryActionText("OK");
-                warning.primaryActionEventListener(LiveSmashBar::dismiss);
+                warning.dismissOnTapOutside();
+                warning.showOverlay();
+                warning.overlayBlockable();
                 warning.duration(3000);
                 warning.show();
             }
@@ -84,6 +88,18 @@ public class CategoryManager extends AppCompatActivity {
                 Kategorie newCategory = new Kategorie(categoryName);
                 kategorienViewModel.insertKategorie(newCategory);
                 finish();
+            } else {
+                Log.e("Category Name", "empty");
+                LiveSmashBar.Builder warning = new LiveSmashBar.Builder(this);
+                warning.title("Bitte gib einen Namen ein");
+                warning.titleColor(Color.WHITE);
+                warning.backgroundColor(Color.parseColor("#541111"));
+                warning.gravity(GravityView.BOTTOM);
+                warning.dismissOnTapOutside();
+                warning.showOverlay();
+                warning.overlayBlockable();
+                warning.duration(3000);
+                warning.show();
             }
         });
 
