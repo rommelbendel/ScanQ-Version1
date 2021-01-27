@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.speech.RecognitionListener;
@@ -26,12 +25,10 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
@@ -40,8 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-
-public class quiz_voice extends AppCompatActivity{
+public class QuizVoice extends AppCompatActivity{
 
     private ImageButton button_voice_input;
     private TextView vokabelAnzeige;
@@ -54,8 +50,7 @@ public class quiz_voice extends AppCompatActivity{
     private CardView quizCard;
     private LinearLayout quizLayout;
     private CardView resultCard;
-    private TextView resultRichtig;
-    private TextView resultFalsch;
+    private TextView resultRichtig, resultFalsch, resultEvaluation;
     private MaterialButton button_restart;
 
     private boolean recordAudio;
@@ -83,7 +78,7 @@ public class quiz_voice extends AppCompatActivity{
                         recordAudio = true;
                     } else {
                         recordAudio = false;
-                        AlertDialog.Builder featureUnaviable = new AlertDialog.Builder(quiz_voice.this);
+                        AlertDialog.Builder featureUnaviable = new AlertDialog.Builder(QuizVoice.this);
                         featureUnaviable.setTitle("nicht verfügbar");
                         featureUnaviable.setMessage("Dieses Quiz benötigt Zugriff auf das Mikrophon um vollständig zu funktionieren.");
                         featureUnaviable.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -128,6 +123,7 @@ public class quiz_voice extends AppCompatActivity{
         quizLayout = findViewById(R.id.frage_layout);
         resultRichtig = findViewById(R.id.countRight);
         resultFalsch = findViewById(R.id.countWrong);
+        resultEvaluation = findViewById(R.id.succsess);
         button_restart = findViewById(R.id.restart1);
 
         resultCard.setVisibility(View.INVISIBLE);
@@ -146,17 +142,17 @@ public class quiz_voice extends AppCompatActivity{
                     assert quizFrageVokabeln != null;
                     Collections.shuffle(quizFrageVokabeln);
                     if (quizFrageVokabeln.size() > vocabNum) {
-                        quiz_voice.this.quizFrageVokabeln = quizFrageVokabeln.subList(0, vocabNum);
+                        QuizVoice.this.quizFrageVokabeln = quizFrageVokabeln.subList(0, vocabNum);
                     }
                     startQuiz();
                 } else {
-                    AlertDialog.Builder warnung = new AlertDialog.Builder(quiz_voice.this);
+                    AlertDialog.Builder warnung = new AlertDialog.Builder(QuizVoice.this);
                     warnung.setTitle("Quiz kann nicht gestartet werden");
                     warnung.setMessage("Es sind keine Vokabeln vorhanden.");
                     warnung.setPositiveButton("OK", (dialog, which) -> {
                         dialog.cancel();
-                        Intent backIntent = new Intent(quiz_voice.this, QuizSettings.class);
-                        quiz_voice.this.startActivity(backIntent);
+                        Intent backIntent = new Intent(QuizVoice.this, QuizSettings.class);
+                        QuizVoice.this.startActivity(backIntent);
                         finish();
                     });
                     warnung.show();
@@ -169,7 +165,7 @@ public class quiz_voice extends AppCompatActivity{
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     if (checkRecordAudioPermission()) {
-                        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(quiz_voice.this);
+                        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(QuizVoice.this);
                         speechRecognizer.setRecognitionListener(new RecognitionListener() {
                             //@RequiresApi(api = Build.VERSION_CODES.R)
                             @Override
@@ -177,7 +173,7 @@ public class quiz_voice extends AppCompatActivity{
                                 ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(50);
                                 answer_text.setBackgroundColor(Color.parseColor("#107575"));
                                 answer_text.setTextColor(Color.parseColor("#ffffff"));
-                                Toast.makeText(quiz_voice.this, "Aufnahme gestartet",
+                                Toast.makeText(QuizVoice.this, "Aufnahme gestartet",
                                         Toast.LENGTH_SHORT).show();
                             }
 
@@ -203,7 +199,7 @@ public class quiz_voice extends AppCompatActivity{
 
                             @Override
                             public void onError(int error) {
-                                Toast.makeText(quiz_voice.this, "Fehler bei der Aufnahme",
+                                Toast.makeText(QuizVoice.this, "Fehler bei der Aufnahme",
                                         Toast.LENGTH_SHORT).show();
                             }
 
@@ -239,7 +235,7 @@ public class quiz_voice extends AppCompatActivity{
                     ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(50);
                     answer_text.setBackgroundColor(Color.parseColor("#ffffff"));
                     answer_text.setTextColor(Color.parseColor("#107575"));
-                    Toast.makeText(quiz_voice.this, "Aufnahme beendet",
+                    Toast.makeText(QuizVoice.this, "Aufnahme beendet",
                             Toast.LENGTH_SHORT).show();
                     return true;
             }
@@ -312,24 +308,24 @@ public class quiz_voice extends AppCompatActivity{
 
         button_bearbeiten.setOnClickListener(v -> {
             final AlertDialog.Builder optionsDialog = new AlertDialog.Builder(
-                    quiz_voice.this);
+                    QuizVoice.this);
             optionsDialog.setTitle("Was möchtest du machen?");
 
             String[] options = {"löschen", "markieren", "bearbeiten"};
             optionsDialog.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        Toast.makeText(quiz_voice.this, "Vokabel löschen",
+                        Toast.makeText(QuizVoice.this, "Vokabel löschen",
                                 Toast.LENGTH_SHORT).show();
                         vokabelViewModel.deleteVokabel(quizFrageVokabeln.get(frageNummer - 1));
                         nextQuestion();
                         break;
                     case 1:
-                        Toast.makeText(quiz_voice.this, "markieren",
+                        Toast.makeText(QuizVoice.this, "markieren",
                                 Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
-                        Toast.makeText(quiz_voice.this, "bearbeiten",
+                        Toast.makeText(QuizVoice.this, "bearbeiten",
                                 Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -357,7 +353,7 @@ public class quiz_voice extends AppCompatActivity{
                         }
                         break;
                 }
-                return quiz_voice.super.onTouchEvent(event);
+                return QuizVoice.super.onTouchEvent(event);
             }
         });
          */
@@ -446,7 +442,7 @@ public class quiz_voice extends AppCompatActivity{
 
         /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            TextToSpeech tts = new TextToSpeech(quiz_voice.this, new TextToSpeech.OnInitListener() {
+            TextToSpeech tts = new TextToSpeech(QuizVoice.this, new TextToSpeech.OnInitListener() {
                 @Override
                 public void onInit(int status) {
                     if (status == TextToSpeech.SUCCESS) {
@@ -518,11 +514,16 @@ public class quiz_voice extends AppCompatActivity{
             resultFalsch.setText(String.format("%d Fragen falsch", quizFrageVokabeln.size() - punkte));
 
             resultCard.setVisibility(View.VISIBLE);
-            quizCard.setVisibility(View.INVISIBLE);
+            quizCard.setVisibility(View.GONE);
+
+            if((quizFrageVokabeln.size() - punkte) < Math.ceil(quizFrageVokabeln.size() / 2f)) {
+                resultEvaluation.setText(R.string.gratualtion);
+            } else {
+                resultEvaluation.setText(R.string.schade);
+            }
 
             button_restart.setOnClickListener(v -> {
-                Intent restart = new Intent(quiz_voice.this, quiz_voice.class);
-                quiz_voice.this.startActivity(restart);
+                //QuizVoice.this.recreate();
                 finish();
             });
         }
@@ -536,7 +537,7 @@ public class quiz_voice extends AppCompatActivity{
     }
 
     private boolean checkRecordAudioPermission() {
-        return ContextCompat.checkSelfPermission(quiz_voice.this,
+        return ContextCompat.checkSelfPermission(QuizVoice.this,
                 Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
