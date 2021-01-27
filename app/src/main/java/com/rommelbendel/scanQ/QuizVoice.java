@@ -52,6 +52,12 @@ public class QuizVoice extends AppCompatActivity{
     private CardView resultCard;
     private TextView resultRichtig, resultFalsch, resultEvaluation;
     private MaterialButton button_restart;
+    private CardView dialogRight;
+    private CardView dialogWrong;
+    private TextView dialogSolutionWrong;
+    private TextView dialogTextSolutionWrong;
+    private TextView dialogSolutionRight;
+    private TextView dialogTextSolutionRight;
 
     private boolean recordAudio;
     private SpeechRecognizer speechRecognizer;
@@ -113,7 +119,7 @@ public class QuizVoice extends AppCompatActivity{
         button_voice_input = findViewById(R.id.button_voice_record);
         vokabelAnzeige = findViewById(R.id.voc);
         button_ok = findViewById(R.id.button_OK);
-        button_bearbeiten = findViewById(R.id.button_bearbeiten);
+        //button_bearbeiten = findViewById(R.id.button_bearbeiten);
         answer_text = findViewById(R.id.input_voice_to_text);
         button_next = findViewById(R.id.quizright);
         button_previous = findViewById(R.id.quizleft);
@@ -125,6 +131,12 @@ public class QuizVoice extends AppCompatActivity{
         resultFalsch = findViewById(R.id.countWrong);
         resultEvaluation = findViewById(R.id.succsess);
         button_restart = findViewById(R.id.restart1);
+        dialogRight = findViewById(R.id.richtig);
+        dialogWrong = findViewById(R.id.falsch);
+        dialogSolutionRight = findViewById(R.id.solution_right);
+        dialogTextSolutionRight = findViewById(R.id.solution_text_right);
+        dialogSolutionWrong = findViewById(R.id.solution_wrong);
+        dialogTextSolutionWrong = findViewById(R.id.solution_text_wrong);
 
         resultCard.setVisibility(View.INVISIBLE);
 
@@ -283,7 +295,6 @@ public class QuizVoice extends AppCompatActivity{
                         break;
                     }
                 }
-
             } else {
                 for (int i = 0; i < quizFrageVokabeln.size(); i++) {
                     if (!vokabeln.contains(quizFrageVokabeln.get(i))) {
@@ -292,9 +303,7 @@ public class QuizVoice extends AppCompatActivity{
                         break;
                     }
                 }
-
             }
-
         });
          */
 
@@ -306,6 +315,7 @@ public class QuizVoice extends AppCompatActivity{
 
         button_ok.setOnClickListener(v -> checkAnswer());
 
+        /*
         button_bearbeiten.setOnClickListener(v -> {
             final AlertDialog.Builder optionsDialog = new AlertDialog.Builder(
                     QuizVoice.this);
@@ -333,6 +343,8 @@ public class QuizVoice extends AppCompatActivity{
             });
             optionsDialog.show();
         });
+
+         */
 
         /*
         quizLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -384,20 +396,29 @@ public class QuizVoice extends AppCompatActivity{
     }
 
     private void prepareQuestion() {
+        dialogWrong.setVisibility(View.GONE);
+        dialogRight.setVisibility(View.GONE);
         if (language_from.equals("DE")) {
             if (frage_und_antwort.containsKey(quizFrageVokabeln.get(frageNummer - 1)
                     .getVokabelDE())) {
+
                 String answer = frage_und_antwort.getString(quizFrageVokabeln.get(frageNummer - 1)
                         .getVokabelDE());
+                String question = quizFrageVokabeln.get(frageNummer - 1).getVokabelDE();
+                Log.e("question", question);
                 answer_text.setText(answer);
                 button_voice_input.setEnabled(false);
                 button_ok.setEnabled(false);
                 answer_text.setEnabled(false);
                 if (quizFrageVokabeln.get(frageNummer - 1).getVokabelENG().equals(answer)) {
-                    quizLayout.setBackgroundColor(Color.rgb(88, 214, 141));
+                    //quizLayout.setBackgroundColor(Color.rgb(88, 214, 141));
+                    dialogRight.setVisibility(View.VISIBLE);
+                    dialogTextSolutionRight.setText(String.format("%s = %s", question, answer));
                     Log.d("prepareQuestion", "Frage richtig");
                 } else {
-                    quizLayout.setBackgroundColor(Color.rgb(236, 112, 99));
+                    //quizLayout.setBackgroundColor(Color.rgb(236, 112, 99));
+                    dialogWrong.setVisibility(View.VISIBLE);
+                    dialogTextSolutionWrong.setText(String.format("%s = %s", question, answer));
                     Log.d("prepareQuestion", "Frage falsch");
                 }
             } else {
@@ -412,14 +433,20 @@ public class QuizVoice extends AppCompatActivity{
                     .getVokabelENG())) {
                 String answer = frage_und_antwort.getString(quizFrageVokabeln.get(frageNummer - 1)
                         .getVokabelENG());
+                String question = quizFrageVokabeln.get(frageNummer - 1).getVokabelENG();
+                Log.e("question", question);
                 answer_text.setText(answer);
                 button_voice_input.setEnabled(false);
                 button_ok.setEnabled(false);
                 answer_text.setEnabled(false);
                 if (quizFrageVokabeln.get(frageNummer - 1).getVokabelDE().equals(answer)) {
                     quizLayout.setBackgroundColor(Color.rgb(88, 214, 141));
+                    dialogRight.setVisibility(View.VISIBLE);
+                    dialogTextSolutionRight.setText(String.format("%s = %s", question, answer));
                 } else {
                     quizLayout.setBackgroundColor(Color.rgb(236, 112, 99));
+                    dialogWrong.setVisibility(View.VISIBLE);
+                    dialogTextSolutionWrong.setText(String.format("%s = %s", question, answer));
                 }
             } else {
                 answer_text.setText("");
@@ -466,13 +493,16 @@ public class QuizVoice extends AppCompatActivity{
         answer_text.setEnabled(false);
         String antwort = answer_text.getText().toString().trim();
         String loesung;
+        String frage;
         Vokabel frageVokabel = quizFrageVokabeln.get(frageNummer -1);
         if (language_from.equals("DE")) {
             frage_und_antwort.putString(frageVokabel.getVokabelDE(), antwort);
             loesung = frageVokabel.getVokabelENG();
+            frage = frageVokabel.getVokabelDE();
         } else {
             frage_und_antwort.putString(frageVokabel.getVokabelENG(), antwort);
             loesung = frageVokabel.getVokabelDE();
+            frage = frageVokabel.getVokabelENG();
         }
 
         vokabelViewModel.updateAnswered(frageVokabel.getId(),
@@ -482,11 +512,15 @@ public class QuizVoice extends AppCompatActivity{
 
         if (antwort.equals(loesung)) {
             givePoint();
-            quizLayout.setBackgroundColor(Color.rgb(88, 214, 141));
+            //quizLayout.setBackgroundColor(Color.rgb(88, 214, 141));
+            dialogRight.setVisibility(View.VISIBLE);
+            dialogTextSolutionRight.setText(String.format("%s = %s", frage, loesung));
             vokabelViewModel.updateCountRightAnswers(frageVokabel.getId(),
                     frageVokabel.getRichtig() + 1);
         } else {
-            quizLayout.setBackgroundColor(Color.rgb(236, 112, 99));
+            //quizLayout.setBackgroundColor(Color.rgb(236, 112, 99));
+            dialogWrong.setVisibility(View.VISIBLE);
+            dialogTextSolutionWrong.setText(String.format("%s = %s", frage, loesung));
             vokabelViewModel.updateCountWrongAnswers(frageVokabel.getId(),
                     frageVokabel.getFalsch() + 1);
         }
@@ -506,7 +540,7 @@ public class QuizVoice extends AppCompatActivity{
             }
         }
         if (solved) {
-            button_bearbeiten.setEnabled(false);
+            //button_bearbeiten.setEnabled(false);
             button_next.setEnabled(false);
             button_previous.setEnabled(false);
 
@@ -515,6 +549,8 @@ public class QuizVoice extends AppCompatActivity{
 
             resultCard.setVisibility(View.VISIBLE);
             quizCard.setVisibility(View.GONE);
+            dialogWrong.setVisibility(View.GONE);
+            dialogRight.setVisibility(View.GONE);
 
             if((quizFrageVokabeln.size() - punkte) < Math.ceil(quizFrageVokabeln.size() / 2f)) {
                 resultEvaluation.setText(R.string.gratualtion);
