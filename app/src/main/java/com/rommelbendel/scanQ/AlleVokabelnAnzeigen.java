@@ -1,15 +1,17 @@
 package com.rommelbendel.scanQ;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -23,9 +25,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.tabs.TabLayout;
+import com.yuvraj.livesmashbar.enums.GravityView;
+import com.yuvraj.livesmashbar.view.LiveSmashBar;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class AlleVokabelnAnzeigen extends AppCompatActivity {
 
@@ -33,10 +42,12 @@ public class AlleVokabelnAnzeigen extends AppCompatActivity {
     private LiveData<List<Vokabel>> vocabsLiveData;
 
     private TextView header;
-    private TableLayout vocabTable;
     private ViewSwitcher toolbar;
     private ImageButton saveButton;
     private ImageButton cancelButton;
+    private RecyclerView vocabTable;
+    private RecyclerView vocabTableEdit;
+    private ViewSwitcher tableSwitcher;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -46,10 +57,12 @@ public class AlleVokabelnAnzeigen extends AppCompatActivity {
         setContentView(R.layout.datenausgabe);
 
         header = findViewById(R.id.header);
-        vocabTable = findViewById(R.id.vocabTable);
+        vocabTable = findViewById(R.id.tabelleVocView);
+        vocabTableEdit = findViewById(R.id.tabelleVoc);
         toolbar = findViewById(R.id.toolbar);
         saveButton = findViewById(R.id.saveButton);
         cancelButton = findViewById(R.id.cancelButton);
+        tableSwitcher = findViewById(R.id.tableSwitcher);
 
         vokabelViewModel = new ViewModelProvider(this).get(VokabelViewModel.class);
 
@@ -114,36 +127,42 @@ public class AlleVokabelnAnzeigen extends AppCompatActivity {
 
         editButton.setOnClickListener(v -> {
             toolbar.setDisplayedChild(1);
-            int rowNum = vocabTable.getChildCount();
-            for (int i = 0; i < rowNum; i++) {
-                TableRow row = (TableRow) vocabTable.getChildAt(i);
-                ((ViewSwitcher) row.getChildAt(0)).setDisplayedChild(1);
-                ((ViewSwitcher) row.getChildAt(1)).setDisplayedChild(1);
-            }
+            tableSwitcher.setDisplayedChild(1);
 
             saveButton.setOnClickListener(v1 -> {
-                int rowNum1 = vocabTable.getChildCount();
-                for (int i = 0; i < rowNum1; i++) {
-                    TableRow row = (TableRow) vocabTable.getChildAt(i);
-                    ViewSwitcher english = ((ViewSwitcher) row.getChildAt(0));
-                    ViewSwitcher german = ((ViewSwitcher) row.getChildAt(1));
+                int rowNum = vocabTable.getChildCount();
+                for (int i = 0; i < rowNum; i++){
+                    TableLayout tableLayoutOriginal = (TableLayout) vocabTable.getChildAt(i);
+                    TableRow rowOriginal = (TableRow) tableLayoutOriginal.getChildAt(0);
 
-                    String engOriginal = (String) ((TextView) english.getChildAt(0))
-                            .getText();
-                    String engEdited = ((EditText) english.getChildAt(1)).getText()
-                            .toString().trim();
+                    CardView cardViewOrigENG = (CardView) rowOriginal.getChildAt(0);
+                    TextView textViewOrigENG = (TextView) cardViewOrigENG.getChildAt(0);
+                    String engoriginal = (String) textViewOrigENG.getText();
 
-                    if (!engEdited.equals(engOriginal) && !engEdited.isEmpty()) {
-                        vokabelViewModel.updateVokabelENG(engOriginal, engEdited);
+                    CardView cardViewOrigDE = (CardView) rowOriginal.getChildAt(1);
+                    TextView textViewOrigDE = (TextView) cardViewOrigDE.getChildAt(0);
+                    String deoriginal = (String) textViewOrigDE.getText();
+
+
+                    TableLayout tableLayoutUpdated = (TableLayout) vocabTableEdit.getChildAt(i);
+                    TableRow rowUpdated = (TableRow) tableLayoutUpdated.getChildAt(0);
+
+                    CardView cardViewUpdatedENG = (CardView) rowUpdated.getChildAt(0);
+                    TextView textViewUpdatedENG = (TextView) cardViewUpdatedENG.getChildAt(0);
+                    String engupdated = textViewUpdatedENG.getText().toString().trim();
+
+                    CardView cardViewUpdatedDE = (CardView) rowUpdated.getChildAt(1);
+                    TextView textViewUpdatedDE = (TextView) cardViewUpdatedDE.getChildAt(0);
+                    String deupdated = textViewUpdatedDE.getText().toString().trim();
+
+                    if (!engupdated.equals(engoriginal) && !engupdated.isEmpty()) {
+                        vokabelViewModel.updateVokabelENG(engoriginal, engupdated);
                     }
 
-                    String deOriginal = (String) ((TextView) german.getChildAt(0)).getText();
-                    String deEdited = ((EditText) german.getChildAt(1)).getText()
-                            .toString().trim();
-
-                    if (!deEdited.equals(deOriginal) && !engEdited.isEmpty()) {
-                        vokabelViewModel.updateVokabelDE(deOriginal, deEdited);
+                    if (!deupdated.equals(deoriginal) && !deupdated.isEmpty()) {
+                        vokabelViewModel.updateVokabelDE(deoriginal, deupdated);
                     }
+
                 }
 
                 AlleVokabelnAnzeigen.this.recreate();
@@ -151,12 +170,7 @@ public class AlleVokabelnAnzeigen extends AppCompatActivity {
 
             cancelButton.setOnClickListener(v12 -> {
                 toolbar.setDisplayedChild(0);
-                int rowNum12 = vocabTable.getChildCount();
-                for (int i = 0; i < rowNum12; i++) {
-                    TableRow row = (TableRow) vocabTable.getChildAt(i);
-                    ((ViewSwitcher) row.getChildAt(0)).setDisplayedChild(0);
-                    ((ViewSwitcher) row.getChildAt(1)).setDisplayedChild(0);
-                }
+                tableSwitcher.setDisplayedChild(0);
             });
         });
 
@@ -195,147 +209,19 @@ public class AlleVokabelnAnzeigen extends AppCompatActivity {
     private void insertInTable(List<Vokabel> vocabs) {
         Collections.sort(vocabs, (voc1, voc2) -> voc1.getVokabelENG()
                 .compareToIgnoreCase(voc2.getVokabelENG()));
-        for (final Vokabel vocab: vocabs) {
-            TableRow vocabRow = new TableRow(this);
-            vocabRow.setTag(vocab);
-            vocabRow.setPadding(5, 5, 5, 5);
-            vocabRow.setFocusable(true);
-            vocabRow.setClickable(true);
-            vocabRow.setLongClickable(true);
 
-            vocabRow.setOnLongClickListener(v -> {
-                final Vokabel vocabRequested = (Vokabel) v.getTag();
+        final TabelleVokabelAdapter stringVokabelAdapter = new TabelleVokabelAdapter(this,
+                TabelleVokabelAdapter.OUTPUT_MODE_EDITABLE, vocabs, vokabelViewModel);
+        vocabTableEdit.setAdapter(stringVokabelAdapter);
+        vocabTableEdit.setLayoutManager(new LinearLayoutManager(this));
+        stringVokabelAdapter.setVokabelCache(vocabs);
 
-                AlertDialog.Builder markingMenu = new AlertDialog.Builder(
-                        AlleVokabelnAnzeigen.this);
-                markingMenu.setTitle(vocabRequested.getVokabelENG());
-                if (!vocabRequested.isMarkiert()) {
-                    markingMenu.setMessage("Soll die Vokabel markiert werden?");
-                    markingMenu.setPositiveButton("ja", (dialog, which) -> {
-                        dialog.dismiss();
-                        vokabelViewModel.updateMarking(vocab.getVokabelDE(), true);
-                        AlleVokabelnAnzeigen.this.recreate();
-                    });
-                    markingMenu.setNegativeButton("nein", (dialog, which) -> dialog.dismiss());
-                } else {
-                    markingMenu.setMessage("Soll die Markierung entfernt werden?");
-                    markingMenu.setPositiveButton("ja", (dialog, which) -> {
-                        dialog.dismiss();
-                        vokabelViewModel.updateMarking(vocab.getVokabelDE(), false);
-                        AlleVokabelnAnzeigen.this.recreate();
-                    });
-                    markingMenu.setNegativeButton("nein", (dialog, which) -> dialog.dismiss());
-                }
-                markingMenu.show();
-                return false;
-            });
+        final TabelleVokabelAdapter stringVokabelAdapterView = new TabelleVokabelAdapter(this,
+                TabelleVokabelAdapter.OUTPUT_MODE_VIEWABLE, vocabs, vokabelViewModel);
+        vocabTable.setAdapter(stringVokabelAdapterView);
+        vocabTable.setLayoutManager(new LinearLayoutManager(this));
+        stringVokabelAdapterView.setVokabelCache(vocabs);
 
-            LayoutParams cardParams = new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT);
-            cardParams.setMargins(0, 0, 10, 0);
-
-            //TableRow.LayoutParams marginParams = new TableRow.LayoutParams();
-            //marginParams.setMargins(0, 0, 5, 0);
-
-            ViewSwitcher viewSwitcherENG = new ViewSwitcher(this);
-
-            CardView cardTxtVENG = new CardView(this);
-            cardTxtVENG.setLayoutParams(cardParams);
-
-            TextView english = new TextView(this);
-            english.setText(vocab.getVokabelENG());
-            english.setTextColor(Color.WHITE);
-            english.setTextSize(20);
-            english.setBackgroundColor(Color.TRANSPARENT);
-            english.setPadding(15, 5, 15, 5);
-            //english.setLayoutParams(marginParams);
-
-            cardTxtVENG.addView(english);
-
-            CardView cardETENG = new CardView(this);
-
-            EditText englishEdit = new EditText(this);
-            englishEdit.setText(vocab.getVokabelENG());
-            englishEdit.setHint("Englisch");
-            englishEdit.setTextColor(Color.WHITE);
-            englishEdit.setTextSize(20);
-            englishEdit.setBackgroundColor(Color.TRANSPARENT);
-            englishEdit.setPadding(5, 5, 5, 5);
-            //englishEdit.setLayoutParams(marginParams);
-
-            cardETENG.addView(englishEdit);
-            cardETENG.setLayoutParams(cardParams);
-
-            //viewSwitcherENG.addView(english, 0);
-            //viewSwitcherENG.addView(englishEdit, 1);
-            //viewSwitcherENG.setDisplayedChild(0);
-            viewSwitcherENG.addView(cardTxtVENG, 0);
-            viewSwitcherENG.addView(cardETENG, 1);
-            viewSwitcherENG.setDisplayedChild(0);
-
-            //marginParams.setMargins(5, 0, 0, 0);
-
-            ViewSwitcher viewSwitcherDE = new ViewSwitcher(this);
-
-            CardView cardTxtVDE = new CardView(this);
-            //cardTxtVDE.setLayoutParams(cardParams);
-
-            TextView german = new TextView(this);
-            german.setText(vocab.getVokabelDE());
-            german.setTextColor(Color.WHITE);
-            german.setTextSize(20);
-            german.setBackgroundColor(Color.TRANSPARENT);
-            german.setPadding(15, 5, 5, 5);
-            //german.setLayoutParams(marginParams);
-
-            cardTxtVDE.addView(german);
-
-            CardView cardETDE = new CardView(this);
-            //cardETDE.setLayoutParams(cardParams);
-
-            EditText germanEdit = new EditText(this);
-            germanEdit.setText(vocab.getVokabelDE());
-            germanEdit.setHint("Deutsch");
-            germanEdit.setTextColor(Color.WHITE);
-            germanEdit.setTextSize(20);
-            germanEdit.setBackgroundColor(Color.TRANSPARENT);
-            germanEdit.setPadding(15, 5, 5, 5);
-            //germanEdit.setLayoutParams(marginParams);
-
-            cardETDE.addView(germanEdit);
-
-            //viewSwitcherDE.addView(german, 0);
-            //viewSwitcherDE.addView(germanEdit, 1);
-            //viewSwitcherDE.setDisplayedChild(0);
-            viewSwitcherDE.addView(cardTxtVDE, 0);
-            viewSwitcherDE.addView(cardETDE, 1);
-            viewSwitcherDE.setDisplayedChild(0);
-
-
-            if (vocab.isMarkiert()) {
-                english.setBackgroundColor(Color.parseColor("#9b59b6"));
-                englishEdit.setBackgroundColor(Color.parseColor("#9b59b6"));
-                german.setBackgroundColor(Color.parseColor("#9b59b6"));
-                germanEdit.setBackgroundColor(Color.parseColor("#9b59b6"));
-                cardETDE.setCardBackgroundColor(Color.parseColor("#9b59b6"));
-                cardETENG.setCardBackgroundColor(Color.parseColor("#9b59b6"));
-                cardTxtVDE.setCardBackgroundColor(Color.parseColor("#9b59b6"));
-                cardTxtVENG.setCardBackgroundColor(Color.parseColor("#9b59b6"));
-            } else {
-                english.setBackgroundColor(Color.parseColor("#13b5a4"));
-                englishEdit.setBackgroundColor(Color.parseColor("#13b5a4"));
-                german.setBackgroundColor(Color.parseColor("#13b5a4"));
-                germanEdit.setBackgroundColor(Color.parseColor("#13b5a4"));
-                cardETDE.setCardBackgroundColor(Color.parseColor("#13b5a4"));
-                cardETENG.setCardBackgroundColor(Color.parseColor("#13b5a4"));
-                cardTxtVDE.setCardBackgroundColor(Color.parseColor("#13b5a4"));
-                cardTxtVENG.setCardBackgroundColor(Color.parseColor("#13b5a4"));
-            }
-
-            vocabRow.addView(viewSwitcherENG);
-            vocabRow.addView(viewSwitcherDE);
-
-            vocabTable.addView(vocabRow);
-        }
     }
+
 }
