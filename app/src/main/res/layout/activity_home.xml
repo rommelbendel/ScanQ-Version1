@@ -35,7 +35,8 @@
         android:translationY="33.5dp"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@drawable/slidedown" />
+        app:srcCompat="@drawable/slidedown"
+        android:contentDescription="@string/down" />
     <androidx.cardview.widget.CardView
         android:visibility="gone"
         android:id="@+id/help"
@@ -62,6 +63,7 @@
                 android:textAllCaps="false"
                 android:text="@string/brauchst_du_hilfe"/>
 
+            <!--
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button4"
                 android:layout_width="wrap_content"
@@ -78,6 +80,7 @@
                 app:iconSize="31dp"
                 android:textSize="20sp"
                 android:text="@string/faq" />
+                -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/homeToTutorial"
                 android:layout_width="wrap_content"
@@ -204,7 +207,7 @@
                     android:textColor="#ffffff"
                     app:iconTint="#ffffff"
                     app:iconSize="35dp"
-                    app:icon="@drawable/vocab"
+                    app:icon="@drawable/dateien"
                     android:text="@string/vokabeln" />
 
 
