@@ -75,14 +75,41 @@
                                     app:cardElevation="0dp"
                                     app:cardCornerRadius="10dp">
 
+                                    <ViewSwitcher
+                                        android:id="@+id/tableSwitcher"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+
+                                        <androidx.recyclerview.widget.RecyclerView
+                                            android:id="@+id/tabelleVocView"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:nestedScrollingEnabled="false"
+                                            android:padding="12dp"
+                                            tools:listitem="@layout/dataset" />
+
+                                        <androidx.recyclerview.widget.RecyclerView
+                                            android:id="@+id/tabelleVoc"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:nestedScrollingEnabled="false"
+                                            android:padding="12dp"
+                                            tools:listitem="@layout/dataset" />
+
+                                    </ViewSwitcher>
+
+
+                                    <!--
                                     <TableLayout
                                         android:id="@+id/vocabTable"
                                         android:layout_height="wrap_content"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="fill_parent"
                                         android:padding="12dp"
-                                        android:stretchColumns="0, 1">
+                                        android:stretchColumns="*"
+                                        android:shrinkColumns="*">
 
                                     </TableLayout>
+                                    -->
 
                                 </androidx.cardview.widget.CardView>
 
