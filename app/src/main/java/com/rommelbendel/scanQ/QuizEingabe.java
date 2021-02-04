@@ -118,21 +118,45 @@ public class QuizEingabe extends AppCompatActivity {
     }
 
     private void previousQuestion() {
-        if (questionPointer > 0) {
-            questionPointer --;
-        } else {
-            questionPointer = quizVocabs.size() - 1;
+        try {
+            if (questionPointer > 0) {
+                questionPointer --;
+            } else {
+                questionPointer = quizVocabs.size() - 1;
+            }
+            loadQuestion();
+        } catch (NullPointerException exception) {
+            AlertDialog.Builder warnung = new AlertDialog.Builder(
+                    QuizEingabe.this);
+            warnung.setTitle("Vokabeln konnten nicht geladen werden.");
+            warnung.setMessage("Es sind nicht genug Vokabeln vorhanden.");
+            warnung.setPositiveButton("OK", (dialog, which) -> {
+                dialog.cancel();
+                finish();
+            });
+            warnung.show();
         }
-        loadQuestion();
     }
 
     private void nextQuestion() {
-        if (questionPointer == quizVocabs.size() - 1) {
-            questionPointer = 0;
-        } else {
-            questionPointer ++;
+        try {
+            if (questionPointer == quizVocabs.size() - 1) {
+                questionPointer = 0;
+            } else {
+                questionPointer ++;
+            }
+            loadQuestion();
+        } catch (NullPointerException exception) {
+            AlertDialog.Builder warnung = new AlertDialog.Builder(
+                    QuizEingabe.this);
+            warnung.setTitle("Vokabeln konnten nicht geladen werden.");
+            warnung.setMessage("Es sind nicht genug Vokabeln vorhanden.");
+            warnung.setPositiveButton("OK", (dialog, which) -> {
+                dialog.cancel();
+                finish();
+            });
+            warnung.show();
         }
-        loadQuestion();
     }
 
     private void loadQuestion() {
